@@ -56,7 +56,7 @@
 
     if (shouldRecordAudioTrack)
     {
-        [self.audioEncodingTarget setShouldInvalidateAudioSampleWhenDone:YES];
+        [self.audioEncodingTarget setShouldInvalidateAudioSampleWhenDone:NO];
         
         readerAudioOutput = [AVAssetReaderAudioMixOutput assetReaderAudioMixOutputWithAudioTracks:audioTracks audioSettings:nil];
         readerAudioOutput.audioMix = self.audioMix;
@@ -65,6 +65,11 @@
     }
 
     return assetReader;
+}
+
+- (AVAsset *)asset
+{
+    return self.compositon;
 }
 
 @end
