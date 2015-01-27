@@ -130,17 +130,15 @@
     });
 }
 
-- (void)layoutSubviews {
+- (void)layoutSubviews
+{
     [super layoutSubviews];
     
     // The frame buffer needs to be trashed and re-created when the view size changes.
     if (!CGSizeEqualToSize(self.bounds.size, boundsSizeAtFrameBufferEpoch) &&
-        !CGSizeEqualToSize(self.bounds.size, CGSizeZero)) {
-        runSynchronouslyOnVideoProcessingQueue(^{
-            [self destroyDisplayFramebuffer];
-            [self createDisplayFramebuffer];
-            [self recalculateViewGeometry];
-        });
+        !CGSizeEqualToSize(self.bounds.size, CGSizeZero))
+    {
+        [self trashAnRecreateTheFrameBuffer];
     }
 }
 
@@ -153,6 +151,16 @@
 
 #pragma mark -
 #pragma mark Managing the display FBOs
+
+- (void)trashAnRecreateTheFrameBuffer
+{
+    runSynchronouslyOnVideoProcessingQueue(^
+    {
+        [self destroyDisplayFramebuffer];
+        [self createDisplayFramebuffer];
+        [self recalculateViewGeometry];
+    });
+}
 
 - (void)createDisplayFramebuffer;
 {

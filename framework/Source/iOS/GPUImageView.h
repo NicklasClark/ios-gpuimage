@@ -36,4 +36,6 @@ typedef enum {
 
 - (void)setCurrentlyReceivingMonochromeInput:(BOOL)newValue;
 
+- (void)trashAnRecreateTheFrameBuffer;
+
 @end
