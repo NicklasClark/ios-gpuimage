@@ -429,33 +429,26 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
     capturePaused = NO;
 }
 
-- (void)rotateCamera
+- (void)rotateCameraWithBackPreset:(NSString*)backPreset andFrontPreset:(NSString*)frontPreset
 {
-	if (self.frontFacingCameraPresent == NO)
-		return;
-	
+    if (self.frontFacingCameraPresent == NO) return;
+    
     NSError *error;
     AVCaptureDeviceInput *newVideoInput;
     AVCaptureDevicePosition currentCameraPosition = [[videoInput device] position];
-    
-    if (currentCameraPosition == AVCaptureDevicePositionBack)
-    {
-        currentCameraPosition = AVCaptureDevicePositionFront;
-    }
-    else
-    {
-        currentCameraPosition = AVCaptureDevicePositionBack;
-    }
+
+    BOOL isBackPosition = currentCameraPosition == AVCaptureDevicePositionBack;
+    currentCameraPosition = isBackPosition ? AVCaptureDevicePositionFront : AVCaptureDevicePositionBack;
     
     AVCaptureDevice *backFacingCamera = nil;
     NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
-	for (AVCaptureDevice *device in devices) 
-	{
-		if ([device position] == currentCameraPosition)
-		{
-			backFacingCamera = device;
-		}
-	}
+    for (AVCaptureDevice *device in devices)
+    {
+        if ([device position] == currentCameraPosition)
+        {
+            backFacingCamera = device;
+        }
+    }
     newVideoInput = [[AVCaptureDeviceInput alloc] initWithDevice:backFacingCamera error:&error];
     
     if (newVideoInput != nil)
@@ -463,15 +456,22 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
         [_captureSession beginConfiguration];
         
         [_captureSession removeInput:videoInput];
+        _captureSession.sessionPreset = isBackPosition ? backPreset : frontPreset;
+        
         if ([_captureSession canAddInput:newVideoInput])
         {
             [_captureSession addInput:newVideoInput];
             videoInput = newVideoInput;
+            
+            _captureSessionPreset = _captureSession.sessionPreset;
         }
         else
         {
+            _captureSession.sessionPreset = _captureSessionPreset;
+            
             [_captureSession addInput:videoInput];
         }
+        
         //captureSession.sessionPreset = oriPreset;
         [_captureSession commitConfiguration];
     }

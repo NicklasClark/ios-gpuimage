@@ -138,7 +138,7 @@ extern NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString
 
 /** This flips between the front and rear cameras
  */
-- (void)rotateCamera;
+- (void)rotateCameraWithBackPreset:(NSString*)backPreset andFrontPreset:(NSString*)frontPreset;
 
 /// @name Benchmarking
 
