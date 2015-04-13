@@ -456,7 +456,7 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
         [_captureSession beginConfiguration];
         
         [_captureSession removeInput:videoInput];
-        _captureSession.sessionPreset = isBackPosition ? backPreset : frontPreset;
+        _captureSession.sessionPreset = isBackPosition ? frontPreset : backPreset;
         
         if ([_captureSession canAddInput:newVideoInput])
         {
